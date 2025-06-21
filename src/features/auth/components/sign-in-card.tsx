@@ -9,9 +9,29 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { LoginMediums } from "./login-mediums";
-import Link from "next/link";
+import { SignInFlow } from "../type";
+import { ChangeEvent, SyntheticEvent, useState } from "react";
+import { SingInFlowFooter } from "./sign-in-flow-footer";
 
-const SignInCard = () => {
+interface ISignInProps {
+  onSignUp: (state: SignInFlow) => void;
+}
+
+const SignInCard = ({ onSignUp }: ISignInProps) => {
+  const [formData, setFormData] = useState({ email: "", password: "" });
+
+  const handleFormValueChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData((formData) => ({
+      ...formData,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleFormSubmit = (e: SyntheticEvent) => {
+    e.preventDefault();
+    console.log(formData);
+  };
+
   return (
     <Card className="h-full w-full p-8">
       <CardHeader className="px-0 pt-0">
@@ -21,11 +41,11 @@ const SignInCard = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5 pt-0 px-0">
-        <form className="space-y-3">
+        <form onSubmit={handleFormSubmit} className="space-y-3">
           <Input
             name="email"
-            value=""
-            onChange={() => {}}
+            value={formData.email}
+            onChange={handleFormValueChange}
             disabled={false}
             placeholder="Email"
             type="email"
@@ -33,24 +53,18 @@ const SignInCard = () => {
           ></Input>
           <Input
             name="password"
-            value=""
-            onChange={() => {}}
+            value={formData.password}
+            onChange={handleFormValueChange}
             disabled={false}
             placeholder="Password"
             type="password"
             required
           ></Input>
-          <Button className="w-full cursor-pointer">Sign In</Button>
+          <Button className="w-full cursor-pointer">Continue</Button>
         </form>
         <Separator />
         <LoginMediums />
-
-        <p className="text-sm text-muted-foreground">
-          Don&apos;t have an account?{" "}
-          <Link href="#" className="text-sky-700 hover:underline">
-            SignUp
-          </Link>
-        </p>
+        <SingInFlowFooter signInFlowState="signin" handleSignUpClick={onSignUp} />
       </CardContent>
     </Card>
   );
